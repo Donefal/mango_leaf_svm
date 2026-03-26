@@ -1,14 +1,29 @@
 import os
 import joblib
 import numpy as np
+import matplotlib.pyplot as plt
 
 from sklearn import svm
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import confusion_matrix
 
 from src.preprocess import load_and_resize
 from src.feature_extraction import extract_features
+
+def make_confusion_matrix(y_test, y_pred):
+    cm = confusion_matrix(y_test, y_pred)
+    labels = ["Anthracnose", "Powdery Mildew", "Healthy"]
+
+    plt.imshow(cm)
+    plt.xticks(np.arange(len(labels)), labels)
+    plt.yticks(np.arange(len(labels)), labels)
+    plt.xlabel("Predicted")
+    plt.ylabel("Actual")
+    plt.title("Confusion Matrix")
+    plt.colorbar()
+    plt.show()
 
 def load_dataset(dataset_path):
     X = []
@@ -79,3 +94,5 @@ def train(file_path):
     # ---------------------------
     joblib.dump(model, "models/svm_model.pkl")
     joblib.dump(scaler, "models/scaler.pkl")
+
+    make_confusion_matrix(y_pred, y_test)
